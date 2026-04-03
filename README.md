@@ -25,9 +25,7 @@ GHES_TOKEN=<pat> node clone-org-repos.js <ghes-host> <org> [clone-dir]
 
 ### Data flow
 
-```
-GHES REST API ──paginate──▶ allRepos[] ──filter(!archived)──▶ active[] ──git clone──▶ disk
-```
+![clone-org-repos data flow](clone-org-repos/data-flow.svg)
 
 ### Key logic
 
@@ -49,9 +47,7 @@ node sync-repos.js [repos-dir]
 
 ### Sync workflow per repo
 
-```
-detect branch ──▶ stash? ──▶ checkout main ──▶ pull ──▶ checkout branch ──▶ merge main ──▶ pop stash
-```
+![sync-repos workflow](sync-repos/data-flow.svg)
 
 ### Key logic
 
@@ -84,9 +80,7 @@ GH_HOST=github.tools.sap node create-org-secret.js <org> <secret-name> <env-var>
 
 ### Data flow
 
-```
-$ENV_VAR ──stdin pipe──▶ gh secret set ──NaCl encrypt──▶ GitHub API
-```
+![create-org-secret data flow](create-org-secret/data-flow.svg)
 
 ### Key logic
 
@@ -107,9 +101,7 @@ GH_HOST=github.tools.sap node backfill-release-notes.js <owner/repo> [--apply] [
 
 ### Data flow
 
-```
-gh api /releases ──paginate──▶ all[] ──filter(!prefix)──▶ included[] ──sort(date)──▶ missing[] ──generate-notes──▶ PATCH release
-```
+![backfill-release-notes data flow](backfill-release-notes/data-flow.svg)
 
 ### Key logic
 

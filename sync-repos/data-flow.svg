@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1350 70" width="1350" height="70">
+  <style>
+    text { font-family: 'Segoe UI', system-ui, sans-serif; fill: #1e1e1e; }
+    .label { font-size: 12px; fill: #868e96; }
+    .box-text { font-size: 14px; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1e1e1e"/>
+    </marker>
+  </defs>
+  <!-- detect branch -->
+  <rect x="2" y="2" width="140" height="50" rx="8" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="72" y="32" text-anchor="middle" class="box-text">detect branch</text>
+  <line x1="148" y1="27" x2="208" y2="27" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- stash? -->
+  <rect x="214" y="2" width="100" height="50" rx="8" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="264" y="32" text-anchor="middle" class="box-text">stash?</text>
+  <line x1="320" y1="27" x2="380" y2="27" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- checkout main -->
+  <rect x="386" y="2" width="150" height="50" rx="8" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="461" y="32" text-anchor="middle" class="box-text">checkout main</text>
+  <line x1="542" y1="27" x2="602" y2="27" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- pull -->
+  <rect x="608" y="2" width="80" height="50" rx="8" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="648" y="32" text-anchor="middle" class="box-text">pull</text>
+  <line x1="694" y1="27" x2="754" y2="27" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- checkout branch -->
+  <rect x="760" y="2" width="160" height="50" rx="8" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="840" y="32" text-anchor="middle" class="box-text">checkout branch</text>
+  <line x1="926" y1="27" x2="986" y2="27" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- merge main -->
+  <rect x="992" y="2" width="140" height="50" rx="8" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="1062" y="32" text-anchor="middle" class="box-text">merge main</text>
+  <line x1="1138" y1="27" x2="1198" y2="27" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- pop stash -->
+  <rect x="1204" y="2" width="120" height="50" rx="8" fill="#ffec99" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="1264" y="32" text-anchor="middle" class="box-text">pop stash</text>
+</svg>

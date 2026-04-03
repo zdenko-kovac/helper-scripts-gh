@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 70" width="660" height="70">
+  <style>
+    text { font-family: 'Segoe UI', system-ui, sans-serif; fill: #1e1e1e; }
+    .label { font-size: 12px; fill: #868e96; }
+    .box-text { font-size: 15px; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1e1e1e"/>
+    </marker>
+  </defs>
+  <!-- $ENV_VAR -->
+  <rect x="2" y="2" width="120" height="50" rx="8" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="62" y="32" text-anchor="middle" class="box-text">$ENV_VAR</text>
+  <!-- Arrow 1 -->
+  <line x1="128" y1="27" x2="218" y2="27" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="173" y="18" text-anchor="middle" class="label">stdin pipe</text>
+  <!-- gh secret set -->
+  <rect x="224" y="2" width="150" height="50" rx="8" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="299" y="32" text-anchor="middle" class="box-text">gh secret set</text>
+  <!-- Arrow 2 -->
+  <line x1="380" y1="27" x2="470" y2="27" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="425" y="18" text-anchor="middle" class="label">NaCl encrypt</text>
+  <!-- GitHub API -->
+  <rect x="476" y="2" width="130" height="50" rx="8" fill="#ffec99" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="541" y="32" text-anchor="middle" class="box-text">GitHub API</text>
+</svg>
