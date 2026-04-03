@@ -123,6 +123,10 @@ GH_HOST=github.tools.sap node backfill-release-notes.js <owner/repo> [--apply] [
 GH_HOST=github.tools.sap node search-assigned-issues.js <org> [assignee] [--exclude-label=done,completed,archived] [--output]
 ```
 
+### Data flow
+
+![search-assigned-issues data flow](search-assigned-issues/data-flow.svg)
+
 ### Key logic
 
 - **Search API** — Uses `GET /search/issues` with query `org:<org> assignee:<user> is:issue state:open -label:<excluded>` to find matching issues across all repos in a single call.
