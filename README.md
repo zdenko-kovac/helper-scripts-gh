@@ -12,6 +12,7 @@ A collection of zero-dependency Node.js CLI utilities for managing GitHub Enterp
 | [sync-repos](sync-repos/) | Keep local repos in sync with remote | [sync-repos.md](sync-repos/sync-repos.md) |
 | [create-org-secret](create-org-secret/) | Set a GitHub org secret from a local env var | [create-org-secret.md](create-org-secret/create-org-secret.md) |
 | [backfill-release-notes](backfill-release-notes/) | Retroactively generate release notes for GitHub releases | [backfill-release-notes.md](backfill-release-notes/backfill-release-notes.md) |
+| [search-assigned-issues](search-assigned-issues/) | Search open issues assigned to a user across a GHES org | [search-assigned-issues.md](search-assigned-issues/search-assigned-issues.md) |
 
 ---
 
@@ -111,6 +112,24 @@ GH_HOST=github.tools.sap node backfill-release-notes.js <owner/repo> [--apply] [
 - **Auto-generated notes** — Uses `POST /repos/{owner}/{repo}/releases/generate-notes` with `tag_name` and `previous_tag_name` to produce notes with PR links and author attribution.
 - **Secure body passing** — The release notes body is piped via stdin using `--input -` to avoid shell escaping issues with markdown content.
 - **Error isolation** — Each release update is wrapped in try/catch; a single failure doesn't halt the entire run.
+
+---
+
+## 5. search-assigned-issues.js — Search open issues across an org
+
+**Purpose:** Searches for open issues assigned to a user across all repositories in a GitHub organization, filtering out issues labeled as done, completed, or archived.
+
+```bash
+GH_HOST=github.tools.sap node search-assigned-issues.js <org> [assignee] [--exclude-label=done,completed,archived] [--output]
+```
+
+### Key logic
+
+- **Search API** — Uses `GET /search/issues` with query `org:<org> assignee:<user> is:issue state:open -label:<excluded>` to find matching issues across all repos in a single call.
+- **Auto-detect user** — If no assignee is provided, resolves the current `gh` user via `gh api user`.
+- **Label exclusion** — Excludes issues with configurable labels (default: `done`, `completed`, `archived`). Archived repos are excluded automatically by the search API.
+- **Grouped output** — Results are grouped by repository and sorted by repo name then issue number for easy scanning.
+- **Markdown export** — `--output` writes results to a `.md` file with clickable issue links, dates, and labels for personal tracking.
 
 ---
 
