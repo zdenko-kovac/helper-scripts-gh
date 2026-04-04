@@ -1,4 +1,4 @@
-# Helper Scripts
+# Helper Scripts — GitHub
 
 A collection of zero-dependency Node.js CLI utilities for managing GitHub Enterprise Server (GHES) repositories and secrets. All scripts require Node.js 18+ and `git`/`gh` on PATH.
 
@@ -146,3 +146,9 @@ GH_HOST=github.tools.sap node search-assigned-issues.js <org> [assignee] [--excl
 | **Idempotent** | Safe to re-run — clone skips existing dirs, sync stashes/restores, secret set is an upsert |
 | **Graceful failure** | Individual item failures don't halt the batch; summaries report what needs attention |
 | **GHES-first** | Designed for GitHub Enterprise Server with `github.com` as a fallback |
+
+---
+
+## Related
+
+- [helper-scripts-k8s](https://github.tools.sap/I340602/helper-scripts-k8s) — Kubernetes cluster diagnostics and bulk operations (Bash)
