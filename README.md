@@ -151,4 +151,4 @@ GH_HOST=github.tools.sap node search-assigned-issues.js <org> [assignee] [--excl
 
 ## Related
 
-- [helper-scripts-k8s](https://github.tools.sap/I340602/helper-scripts-k8s) — Kubernetes cluster diagnostics and bulk operations (Bash)
+- [helper-scripts-k8s](https://github.com/zdenko-kovac/helper-scripts-k8s) — Kubernetes cluster diagnostics and bulk operations (Bash)
