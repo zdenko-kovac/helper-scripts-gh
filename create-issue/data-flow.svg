@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 140" width="800" height="140">
+  <style>
+    text { font-family: 'Segoe UI', system-ui, sans-serif; fill: #1e1e1e; }
+    .label { font-size: 11px; fill: #868e96; }
+    .box-text { font-size: 14px; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1e1e1e"/>
+    </marker>
+  </defs>
+  <!-- source.md -->
+  <rect x="2" y="42" width="110" height="50" rx="8" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="57" y="72" text-anchor="middle" class="box-text">source.md</text>
+  <line x1="118" y1="67" x2="198" y2="67" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="158" y="58" text-anchor="middle" class="label">parse(# h1)</text>
+  <!-- {title, body} -->
+  <rect x="204" y="42" width="120" height="50" rx="8" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="264" y="72" text-anchor="middle" class="box-text">{title, body}</text>
+  <line x1="330" y1="67" x2="408" y2="67" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="369" y="58" text-anchor="middle" class="label">+ assignee</text>
+  <!-- issue payload -->
+  <rect x="414" y="42" width="130" height="50" rx="8" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="479" y="72" text-anchor="middle" class="box-text">issue payload</text>
+  <!-- fork: dry-run arrow -->
+  <line x1="550" y1="55" x2="638" y2="25" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="580" y="28" text-anchor="middle" class="label">dry-run</text>
+  <!-- fork: --apply arrow -->
+  <line x1="550" y1="79" x2="638" y2="109" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="580" y="108" text-anchor="middle" class="label">--apply</text>
+  <!-- preview (stdout) -->
+  <rect x="644" y="2" width="150" height="50" rx="8" fill="#ffec99" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="719" y="32" text-anchor="middle" class="box-text">preview (stdout)</text>
+  <!-- POST /issues -->
+  <rect x="644" y="84" width="150" height="50" rx="8" fill="#ffec99" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="719" y="114" text-anchor="middle" class="box-text">POST /issues</text>
+</svg>

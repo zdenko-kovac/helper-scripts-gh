@@ -13,6 +13,8 @@ A collection of zero-dependency Node.js CLI utilities for managing GitHub Enterp
 | [create-org-secret](create-org-secret/) | Set a GitHub org secret from a local env var | [create-org-secret.md](create-org-secret/create-org-secret.md) |
 | [backfill-release-notes](backfill-release-notes/) | Retroactively generate release notes for GitHub releases | [backfill-release-notes.md](backfill-release-notes/backfill-release-notes.md) |
 | [search-assigned-issues](search-assigned-issues/) | Search open issues assigned to a user across a GHES org | [search-assigned-issues.md](search-assigned-issues/search-assigned-issues.md) |
+| [report-failed-workflows](report-failed-workflows/) | Report still-broken GitHub Actions workflows across an org | [report-failed-workflows.md](report-failed-workflows/report-failed-workflows.md) |
+| [create-issue](create-issue/) | Create a GitHub issue from a markdown file | [create-issue.md](create-issue/create-issue.md) |
 
 ---
 
@@ -137,6 +139,52 @@ GH_HOST=github.tools.sap node search-assigned-issues.js <org> [assignee] [--excl
 
 ---
 
+## 6. report-failed-workflows.js — Report still-broken CI/CD workflows
+
+**Purpose:** Scans all repos in a GitHub org for failed Actions workflow runs within a lookback window, filters out workflows that have since recovered (newer successful run), and writes a markdown report with failure analysis.
+
+```bash
+GH_HOST=github.tools.sap node report-failed-workflows.js <org> [--hours=24] [--output=failed-workflows.md]
+```
+
+### Data flow
+
+![report-failed-workflows data flow](report-failed-workflows/data-flow.svg)
+
+### Key logic
+
+- **Lookback window** — Queries `repos/{repo}/actions/runs?status=failure&created=>={since}` where `since` is computed from `--hours` (default 24). Manual pagination handles the nested `{ workflow_runs: [] }` response.
+- **Still-broken filter** — Groups failures by workflow file path, picks the most recent failure per workflow, then checks `repos/{repo}/actions/workflows/{id}/runs?status=success&per_page=1` to see if a newer success exists. Only workflows with no newer success are reported.
+- **Failure analysis** — Fetches job details via the Jobs API, extracts failed job and step names to produce a short analysis like `Job "build" failed at step "Run tests"`.
+- **GHES support** — Uses `GH_HOST` environment variable, consistent with other scripts. Works on both GHES and github.com.
+- **Error isolation** — Per-repo try/catch ensures one broken or Actions-disabled repo doesn't halt the scan. Skipped repos are logged and counted in the summary.
+
+---
+
+## 7. create-issue.js — Create a GitHub issue from a markdown file
+
+**Purpose:** Reads a `.md` file, extracts the first `# Heading` as the issue title and the rest as the body, then creates a GitHub issue. Dry-run by default.
+
+```bash
+GH_HOST=github.tools.sap node create-issue.js <org> <repo> --source=issue.md [--assignee=user] [--label=bug,urgent] [--apply]
+```
+
+### Data flow
+
+![create-issue data flow](create-issue/data-flow.svg)
+
+### Key logic
+
+- **Markdown parsing** — The first `# Heading` line becomes the issue title; everything after becomes the body. An error is raised if no heading is found.
+- **Dry-run by default** — Previews the issue (title, body, labels, assignee) without creating it. The `--apply` flag is required to actually create the issue, preventing accidental submissions.
+- **Template included** — A `template.md` file provides a starting point with Description, Steps to Reproduce, Expected/Actual Behavior sections.
+- **Label support** — `--label=bug,urgent` attaches comma-separated labels to the issue.
+- **Auto-assignee** — Defaults to the current `gh` user via `GET /user` if `--assignee` is omitted.
+- **Secure body passing** — The issue body is piped via stdin using `-F body=@-` to avoid shell escaping issues with markdown content.
+- **GHES support** — Uses `GH_HOST` environment variable, consistent with other scripts.
+
+---
+
 ## Cross-cutting patterns
 
 | Pattern | Detail |
@@ -151,4 +199,4 @@ GH_HOST=github.tools.sap node search-assigned-issues.js <org> [assignee] [--excl
 
 ## Related
 
-- [helper-scripts-k8s](https://github.com/zdenko-kovac/helper-scripts-k8s) — Kubernetes cluster diagnostics and bulk operations (Bash)
+- [helper-scripts-k8s](https://github.tools.sap/I340602/helper-scripts-k8s) — Kubernetes cluster diagnostics and bulk operations (Bash)
