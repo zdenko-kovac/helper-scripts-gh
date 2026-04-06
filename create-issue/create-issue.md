@@ -155,7 +155,7 @@ Creating issue...
 
 ## Data flow
 
-![create-issue data flow](data-flow.svg)
+![create-issue data flow](data-flow.png)
 
 ## How it works
 

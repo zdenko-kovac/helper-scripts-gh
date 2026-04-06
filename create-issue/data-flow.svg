@@ -22,11 +22,11 @@
   <!-- issue payload -->
   <rect x="414" y="42" width="130" height="50" rx="8" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
   <text x="479" y="72" text-anchor="middle" class="box-text">issue payload</text>
-  <!-- fork: dry-run arrow -->
-  <line x1="550" y1="55" x2="638" y2="25" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="580" y="28" text-anchor="middle" class="label">dry-run</text>
-  <!-- fork: --apply arrow -->
-  <line x1="550" y1="79" x2="638" y2="109" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- fork: dry-run -->
+  <line x1="550" y1="55" x2="638" y2="27" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="580" y="30" text-anchor="middle" class="label">dry-run</text>
+  <!-- fork: apply -->
+  <line x1="550" y1="79" x2="638" y2="107" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrow)"/>
   <text x="580" y="108" text-anchor="middle" class="label">--apply</text>
   <!-- preview (stdout) -->
   <rect x="644" y="2" width="150" height="50" rx="8" fill="#ffec99" stroke="#1e1e1e" stroke-width="2"/>

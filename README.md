@@ -28,7 +28,7 @@ GHES_TOKEN=<pat> node clone-org-repos.js <ghes-host> <org> [clone-dir]
 
 ### Data flow
 
-![clone-org-repos data flow](clone-org-repos/data-flow.svg)
+![clone-org-repos data flow](clone-org-repos/data-flow.png)
 
 ### Key logic
 
@@ -50,7 +50,7 @@ node sync-repos.js [repos-dir]
 
 ### Sync workflow per repo
 
-![sync-repos workflow](sync-repos/data-flow.svg)
+![sync-repos workflow](sync-repos/data-flow.png)
 
 ### Key logic
 
@@ -83,7 +83,7 @@ GH_HOST=github.tools.sap node create-org-secret.js <org> <secret-name> <env-var>
 
 ### Data flow
 
-![create-org-secret data flow](create-org-secret/data-flow.svg)
+![create-org-secret data flow](create-org-secret/data-flow.png)
 
 ### Key logic
 
@@ -104,7 +104,7 @@ GH_HOST=github.tools.sap node backfill-release-notes.js <owner/repo> [--apply] [
 
 ### Data flow
 
-![backfill-release-notes data flow](backfill-release-notes/data-flow.svg)
+![backfill-release-notes data flow](backfill-release-notes/data-flow.png)
 
 ### Key logic
 
@@ -127,7 +127,7 @@ GH_HOST=github.tools.sap node search-assigned-issues.js <org> [assignee] [--excl
 
 ### Data flow
 
-![search-assigned-issues data flow](search-assigned-issues/data-flow.svg)
+![search-assigned-issues data flow](search-assigned-issues/data-flow.png)
 
 ### Key logic
 
@@ -149,7 +149,7 @@ GH_HOST=github.tools.sap node report-failed-workflows.js <org> [--hours=24] [--o
 
 ### Data flow
 
-![report-failed-workflows data flow](report-failed-workflows/data-flow.svg)
+![report-failed-workflows data flow](report-failed-workflows/data-flow.png)
 
 ### Key logic
 
@@ -171,7 +171,7 @@ GH_HOST=github.tools.sap node create-issue.js <org> <repo> --source=issue.md [--
 
 ### Data flow
 
-![create-issue data flow](create-issue/data-flow.svg)
+![create-issue data flow](create-issue/data-flow.png)
 
 ### Key logic
 
