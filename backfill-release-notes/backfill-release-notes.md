@@ -1,16 +1,19 @@
 # backfill-release-notes.js
 
-A Node.js helper script that retroactively generates release notes for GitHub releases that are missing them, using GitHub's auto-generated release notes API.
+A Node.js helper script that retroactively generates categorized release notes for GitHub releases based on conventional commits between tags.
 
 ## Features
 
-- **Auto-generated notes** — uses the `POST /repos/{owner}/{repo}/releases/generate-notes` API for structured notes with PR links and author attribution.
+- **Conventional commit categorization** (default) — fetches commits via the Compare API, parses prefixes (`feat:`, `fix:`, `chore:`, etc.), and produces categorized markdown with sections for Breaking Changes, New Features, Bug Fixes, Improvements, Documentation, and Other Changes.
+- **GitHub fallback mode** — `--mode=github` uses the `POST /repos/{owner}/{repo}/releases/generate-notes` API for GitHub's auto-generated notes (flat PR list).
+- **Force overwrite** — `--force` overwrites releases that already have notes (useful for migrating from GitHub auto-format to conventional-commit format).
+- **Author filtering** — `--exclude-authors=bot1,bot2` skips commits from specified authors (e.g. service users, bots).
 - **Release name normalization** — sets the release name to the clean tag name (e.g. `v1.2.3`) when updating. Use `--rename-only` to fix names without changing notes.
 - **Tag filtering** — skip releases matching a configurable tag prefix (default: `helm-`).
 - **Dry-run by default** — previews what would be updated; requires `--apply` to modify releases.
 - **Verbose mode** — `--verbose` shows full generated notes and lists releases that already have notes.
-- **GHES support** — set `GH_HOST` to target a GitHub Enterprise Server instance (3.6+).
-- **Idempotent** — skips releases that already have notes; safe to re-run.
+- **GHES support** — set `GH_HOST` to target a GitHub Enterprise Server instance.
+- **Idempotent** — skips releases that already have notes (unless `--force` is used); safe to re-run.
 
 ## Prerequisites
 
@@ -18,21 +21,23 @@ A Node.js helper script that retroactively generates release notes for GitHub re
 |---|---|
 | **Node.js** | v18 or later |
 | **GitHub CLI (`gh`)** | Must be installed and authenticated (`gh auth login`). For GHES, ensure your token has `repo` scope. |
-| **GHES version** | 3.6+ (the `generate-notes` endpoint was added in GHES 3.6) |
 
 ## Usage
 
 ```bash
-node backfill-release-notes.js <owner/repo> [--apply] [--rename-only] [--verbose] [--exclude-prefix=helm-]
+node backfill-release-notes.js <owner/repo> [flags]
 ```
 
 | Argument | Required | Description |
 |---|---|---|
 | `owner/repo` | Yes | Repository in `owner/repo` format |
 | `--apply` | No | Update releases (default: dry-run preview only) |
+| `--force` | No | Overwrite releases that already have notes |
 | `--rename-only` | No | Only rename releases to match their tag name (no notes changes) |
 | `--verbose`, `-v` | No | Show full release notes and list releases that already have notes |
 | `--exclude-prefix` | No | Tag prefix to skip (default: `helm-`) |
+| `--exclude-authors` | No | Comma-separated commit author names to skip |
+| `--mode` | No | Note generation engine: `conventional` (default) or `github` |
 
 ### Environment variables
 
@@ -42,7 +47,7 @@ node backfill-release-notes.js <owner/repo> [--apply] [--rename-only] [--verbose
 
 ## Examples
 
-Dry-run preview (default):
+Dry-run preview (default — conventional commit mode):
 
 ```bash
 GH_HOST=github.tools.sap node backfill-release-notes.js cs-devops/flux-notification-receiver
@@ -52,6 +57,24 @@ Apply changes to releases:
 
 ```bash
 GH_HOST=github.tools.sap node backfill-release-notes.js cs-devops/flux-notification-receiver --apply
+```
+
+Force overwrite all releases with categorized notes:
+
+```bash
+node backfill-release-notes.js SAP/clustersecret-operator --force --apply
+```
+
+Exclude bot authors:
+
+```bash
+node backfill-release-notes.js SAP/clustersecret-operator --exclude-authors="renovate[bot],dependabot[bot]" --apply
+```
+
+Use GitHub's auto-generated notes instead of conventional commits:
+
+```bash
+node backfill-release-notes.js owner/repo --mode=github --apply
 ```
 
 Custom exclude prefix:
@@ -66,13 +89,7 @@ Verbose dry-run (shows full generated notes and lists existing ones):
 node backfill-release-notes.js SAP/clustersecret-operator --verbose
 ```
 
-Rename releases to match their tag name (dry-run):
-
-```bash
-node backfill-release-notes.js SAP/clustersecret-operator --rename-only
-```
-
-Rename releases (apply):
+Rename releases to match their tag name:
 
 ```bash
 node backfill-release-notes.js SAP/clustersecret-operator --rename-only --apply
@@ -99,60 +116,65 @@ GH_HOST=github.tools.sap gh api "orgs/cs-devops/repos" --paginate -q '.[].full_n
     done
 ```
 
-Dry-run across an org on `github.com`:
-
-```bash
-gh api "orgs/my-org/repos" --paginate -q '.[].full_name' \
-  | while read -r repo; do
-      node backfill-release-notes.js "$repo"
-    done
-```
-
 ### Sample output
 
 ```
-Repository:      cs-devops/flux-notification-receiver (github.tools.sap)
-Exclude prefix:  helm-*
-Mode:            DRY-RUN (preview only)
+Repository:        SAP/clustersecret-operator
+Exclude prefix:    helm-*
+Notes engine:      conventional
+Mode:              DRY-RUN (preview only)
 
 Fetching releases...
-  Found 24 release(s) total
-  Excluded 8 release(s) matching "helm-*"
-  12 release(s) already have notes
-  4 release(s) need notes
+  Found 74 release(s) total
+  Excluded 0 release(s) matching "helm-*"
+  74 release(s) already have notes
+  0 release(s) need notes
 
-  [dry-run]  would update v1.0.0 (first release)
-             preview: ## What's Changed...
-  [dry-run]  would update v1.1.0 (prev: v1.0.0)
-             preview: ## What's Changed...
-  [dry-run]  would update v1.2.0 (prev: v1.1.0)
-             preview: ## What's Changed...
-  [dry-run]  would update v2.0.0 (prev: v1.2.0)
-             preview: ## What's Changed...
+Nothing to do.
+```
 
---- Summary ---
-  Total releases:      24
-  Excluded (filtered): 8
-  Already have notes:  12
-  Would update:        4
-  Failed:              0
+With `--force --verbose`:
 
-This was a dry run. Re-run with --apply to update releases.
+```
+  [dry-run]  would update v0.3.2 (prev: v0.3.1)
+
+## What's Changed
+
+### 🐛 Bug Fixes
+- update node.js to v20 (#9) (08e1b7a)
+- update module github.com/google/uuid to v1.3.1 (e707a84)
+
+### 🔧 Improvements
+- update actions/upload-pages-artifact action to v2 (#8) (0742b2f)
+- update golang docker tag to v1.21.0 (#11) (19bfc02)
+- update actions/checkout action to v4 (#14) (680aaf6)
+
+### Other Changes
+- update website (b45e44c)
+- add renovate.json (2771f69)
+
+**Full Changelog**: https://github.com/SAP/clustersecret-operator/compare/v0.3.1...v0.3.2
 ```
 
 ## How it works
 
-### Default mode (backfill notes)
+### Default mode (conventional commits)
 
 1. Fetches all releases for the repository via `gh api --paginate`.
 2. Filters out releases whose tag name starts with the exclude prefix.
 3. Sorts remaining releases by `created_at` (oldest first).
-4. For each release with an empty body:
+4. For each release that needs notes (empty body, or all releases with `--force`):
    - Determines the previous tag from the chronologically sorted list.
-   - Calls GitHub's `generate-notes` API with the current and previous tag.
-   - In dry-run mode: prints a preview of the generated notes (full notes with `--verbose`).
-   - In apply mode: PATCHes the release name (set to the tag) and body (generated notes).
+   - Fetches commits between the two tags via the Compare API.
+   - Filters out merge commits, version bumps, and excluded authors.
+   - Categorizes each commit by its conventional prefix into sections.
+   - Builds categorized markdown with emoji headers and a full changelog link.
+   - In dry-run mode: prints a preview. In apply mode: PATCHes the release.
 5. Prints a summary of totals, updates, and failures.
+
+### GitHub mode (`--mode=github`)
+
+Same flow, but step 4 calls GitHub's `generate-notes` API instead of parsing commits locally. Produces GitHub's standard auto-generated format (flat PR list with author attribution).
 
 ### Rename-only mode (`--rename-only`)
 
@@ -161,22 +183,35 @@ This was a dry run. Re-run with --apply to update releases.
 3. In dry-run mode: lists what would be renamed.
 4. In apply mode: PATCHes the release name to match the tag.
 
+## Conventional commit categories
+
+| Prefix | Section |
+|---|---|
+| `feat!:`, `fix!:`, `<type>!:` | ⚠️ Breaking Changes |
+| `feat:` | 🚀 New Features |
+| `fix:` | 🐛 Bug Fixes |
+| `perf:`, `refactor:`, `chore:`, `ci:`, `build:`, `style:`, `test:`, `revert:` | 🔧 Improvements |
+| `docs:` | 📄 Documentation |
+| Everything else | Other Changes |
+
 ## API endpoints used
 
 | Endpoint | Method | Purpose |
 |---|---|---|
 | `repos/{owner}/{repo}/releases` | GET | Fetch all releases (paginated) |
-| `repos/{owner}/{repo}/releases/generate-notes` | POST | Generate release notes between two tags |
+| `repos/{owner}/{repo}/compare/{base}...{head}` | GET | Fetch commits between tags (conventional mode) |
+| `repos/{owner}/{repo}/releases/generate-notes` | POST | Generate notes via GitHub API (github mode) |
 | `repos/{owner}/{repo}/releases/{id}` | PATCH | Update release name and/or body |
 
 ## Edge cases
 
 | Case | Handling |
 |---|---|
-| First release (no predecessor) | `previous_tag_name` is omitted; API generates notes from repo start |
+| First release (no predecessor) | Outputs `## Initial Release {tag}` |
+| Zero relevant commits after filtering | Outputs `Release {tag} -- no notable changes since {prevTag}` |
+| Previous tag not found (404) | Treats as initial release |
 | Release body is `null` or whitespace | Treated as empty and eligible for backfill |
 | Release name is `null` or differs from tag | Detected by `--rename-only`; displayed as `(no name)` |
-| All releases already have notes | Prints "Nothing to do" and exits successfully |
-| No releases / all excluded | Clean summary, exits 0 |
+| All releases already have notes | Prints "Nothing to do" and exits successfully (unless `--force`) |
 | API failure for a single release | Logged as `[FAILED]`, counted in summary, processing continues |
 | 100+ releases | Handled by `gh api --paginate` |
